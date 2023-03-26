@@ -19,6 +19,15 @@ class CustomerTable {
         return $customer;
     }
     
+     function get_countries() {
+        $query = 'SELECT * FROM countries';
+        $statement = $this->db->getDB()->prepare($query);
+        $statement->execute();
+        $countries = $statement->fetchALL();
+        $statement->closeCursor();
+        return $countries;
+    }
+    
     function get_customer_by_email($email) {
         $query = 'SELECT * FROM customers
               WHERE email = :email';
