@@ -2,6 +2,8 @@
 <main>
 
     <h2>Customer Login</h2>
+    <p class="error"><?php echo $message; ?></p>
+
     <p>You must login before you can register a product.</p>
     <!-- display a search form -->
     <form action="." method="post" id="aligned">
@@ -9,6 +11,10 @@
         <label>Email:</label>
         <input type="text" name="email" 
                value="<?php echo htmlspecialchars($email); ?>">
+        <br>
+        <label>Password:</label>
+        <input type="password" name="password" 
+               value="<?php echo htmlspecialchars($password); ?>">
         <br>
         <label>&nbsp;</label>
         <input type="submit" value="Login">

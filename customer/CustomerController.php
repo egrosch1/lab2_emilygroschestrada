@@ -9,6 +9,17 @@ class CustomerController {
     private $action;
     
     public function __construct() {
+        
+         $this->startSession();
+
+        $https = filter_input(INPUT_SERVER, 'HTTPS');
+        if (!$https) {
+            $host = filter_input(INPUT_SERVER, 'HTTP_HOST');
+            $uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
+            $url = 'https://' . $host . $uri;
+            header("Location: " . $url);
+            exit();
+        }
         $this->action = '';
         $this->db = new Database();
         if (!$this->db->isConnected()) {
@@ -32,6 +43,9 @@ class CustomerController {
             case 'register_product':
                 $this->processRegisterProduct();
                 break;
+            case 'Logout':
+                $this->processLogout();
+                break;
             default:
                 $this->processCustomerLogin();
                 break;
@@ -42,8 +56,18 @@ class CustomerController {
      * Process Request
      ***************************************************************/
     private function processCustomerLogin() {
-        $email = '';
-        include '../view/customer/customer_login.php';
+        if (!isset($_SESSION['is_valid_customer'])) {
+            $email = '';
+            $password = '';
+            $message = '';
+            include '../view/customer/customer_login.php';
+        } else {
+            $customer_table = new CustomerTable($this->db);
+            $customer = $customer_table->get_customer_by_email($_SESSION['email']);
+            $product_table = new ProductTable($this->db);
+            $products = $product_table->get_products();
+            include '../view/customer/product_register.php';
+        }
     }
     
     private function processGetCustomer() {
@@ -68,6 +92,35 @@ class CustomerController {
         $message = "Product ($product_code) was registered successfully.";
         include '../view/customer/product_register.php';
     }
+    
+     private function processLogout() {
+        unset($_SESSION['is_valid_customer']);
+        $this->deleteCookie();
+        if (!isset($_SESSION['is_valid_admin'])) {
+            $_SESSION = array();
+            session_destroy();
+        }
+        $message = 'You have successfully logged out.';
+        $email = '';
+        $password = '';
+        include '../view/customer/customer_login.php';
+    }
+
+    private function deleteCookie() {
+        $name = 'customer';
+        $expire = strtotime('-1 year');
+        $params = session_get_cookie_params();
+        $path = $params['path'];
+        $domain = $params['domain'];
+        $secure = $params['secure'];
+        $httponly = $params['httponly'];
+        setcookie($name, '', $expire, $path, $domain, $secure, $httponly);
+    }
+
+    private function startSession() {
+        session_start();
+    }
+
 }
 
 ?>

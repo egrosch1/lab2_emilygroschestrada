@@ -31,5 +31,11 @@
         </form>
     <?php endif; ?>
 
+        <form>
+            <input type ="hidden" name ="action"
+                   value ="end_session">
+            <p>You are logged in as <?php echo $customer['email']; ?></p>
+            <input type="submit" name="action" value="Logout" />
+        </form>
 </main>
 <?php include '../view/shared/footer.php'; ?>
