@@ -1,22 +1,20 @@
 <?php include '../view/shared/header.php'; ?>
 <main>
-    <h2>Login</h2>
+<h2>Admin Login</h2>
+<p class ="error"><?php echo $message; ?></p>
 
-    <form action="." method="post" id="login_form" class="aligned">
-
-        <label>Username:</label>
-        <input type="text" class="text" name="username">
-        <br>
-
-        <label>Password:</label>
-        <input type="password" class="text" name="password">
-        <br>
-
-        <label>&nbsp;</label>
-        <input type="submit" name="action" value="Login">
-    </form>
-
-    <p><?php echo $login_message; ?></p>
+<form action="." method="post" id="aligned">
+    <input type ="hidden" name ="action" value="Admin_Login">
+    <label>Username:</label>
+    <input type ="text" name="username"
+           value="<?php echo htmlspecialchars($username); ?>"><!-- comment -->
+    <br>
+     <label>Password:</label>
+     <input type ="text" name="password"
+           value="<?php echo htmlspecialchars($password); ?>">
+    <br>
+    <label>&nbsp;</label>
+    <input type="submit" value ="Login">
+</form>
 </main>
-</body>
-</html>
+<?php include '../view/shared/footer.php'; 
