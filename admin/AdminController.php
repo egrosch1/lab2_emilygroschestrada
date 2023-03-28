@@ -24,6 +24,12 @@ class AdminController {
         $this->action = Util::getAction($this->action);
 
         switch ($this->action) {
+             case 'Show Login':
+                $this->processShowLogin();
+                 break;
+             case 'Process Login':
+                 $this->processLogin();
+                 break;
             case 'under_construction':
                 include '../view/under_construction.php';
                 break;
@@ -61,6 +67,24 @@ class AdminController {
      * Process Request
      * ************************************************************* */
 
+     private function processShowLogin() {
+        $login_message = 'Welcome Back';
+        include('./view/login.php');
+    }
+
+    private function processAdminLogin() {
+        if (!isset($_SESSION['is_valid_admin'])) {
+            $username = '';
+            $password = '';
+            $message = '';
+            include '../view/admin/admin_login.php';
+        } else {
+            $admin_table = new AdministratorTable($this->db);
+            $admin = $admin_table->get_admin_by_username($_SESSION['username']);
+            include '../view/admin/admin_menu.php';
+        }
+    }
+    
     private function processAdminMenu() {
         include '../view/admin/admin_menu.php';
     }
