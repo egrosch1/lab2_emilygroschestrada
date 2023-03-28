@@ -204,6 +204,10 @@ class AdminController {
         include '../view/admin/customer_search.php';
     }
 
+    private function startSession() {
+        session_start();
+    }
+
 }
 
 ?>
