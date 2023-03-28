@@ -1,7 +1,6 @@
 <?php include '../view/shared/header.php'; ?>
 <main>
 <h2>Admin Login</h2>
-<p class ="error"><?php echo $message; ?></p>
 
 <form action="." method="post" id="aligned">
     <input type ="hidden" name ="action" value="get_admin">
