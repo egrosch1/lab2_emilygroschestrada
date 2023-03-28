@@ -1,6 +1,8 @@
 <?php
 
 require_once '../model/Database.php';
+require_once '../model/AdministratorTable.php';
+
 require_once '../model/ProductTable.php';
 require_once '../model/CustomerTable.php';
 require_once '../util/Util.php';
@@ -10,6 +12,16 @@ class AdminController {
     private $action;
 
     public function __construct() {
+        $this->startSession();
+
+        $https = filter_input(INPUT_SERVER, 'HTTPS');
+        if (!$https) {
+            $host = filter_input(INPUT_SERVER, 'HTTP_HOST');
+            $uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
+            $url = 'https://' . $host . $uri;
+            header("Location: " . $url);
+            exit();
+        }
         $this->action = '';
         $this->db = new Database();
         if (!$this->db->isConnected()) {
@@ -24,12 +36,12 @@ class AdminController {
         $this->action = Util::getAction($this->action);
 
         switch ($this->action) {
-             case 'Show Login':
-                $this->processShowLogin();
-                 break;
-             case 'Process Login':
-                 $this->processLogin();
-                 break;
+            case 'admin_login':
+                $this->processAdminLogin();
+                break;
+            case 'get_admin':
+                $this->processGetAdmin();
+                break;
             case 'under_construction':
                 include '../view/under_construction.php';
                 break;
@@ -67,11 +79,6 @@ class AdminController {
      * Process Request
      * ************************************************************* */
 
-     private function processShowLogin() {
-        $login_message = 'Welcome Back';
-        include('./view/login.php');
-    }
-
     private function processAdminLogin() {
         if (!isset($_SESSION['is_valid_admin'])) {
             $username = '';
@@ -84,7 +91,23 @@ class AdminController {
             include '../view/admin/admin_menu.php';
         }
     }
-    
+
+    private function processGetAdmin() {
+        $username = filter_input(INPUT_POST, 'username');
+        $password = filter_input(INPUT_POST, 'password');
+        $admin_table = new AdministratorTable($this->db);
+        $admin = $admin_table->get_admin_by_username($username);
+        if ($this->db->isValidAdminLogin($username, $password)) {
+            $_SESSION['is_valid_admin'] = true;
+            $_SESSION['username'] = $username;
+            include '../view/admin/admin_menu.php';
+        } else {
+            $password = '';
+            $message = 'Invalid email or password.';
+            include '../view/admin/admin_login.php';
+        }
+    }
+
     private function processAdminMenu() {
         include '../view/admin/admin_menu.php';
     }

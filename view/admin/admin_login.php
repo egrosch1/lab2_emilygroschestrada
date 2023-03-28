@@ -4,10 +4,10 @@
 <p class ="error"><?php echo $message; ?></p>
 
 <form action="." method="post" id="aligned">
-    <input type ="hidden" name ="action" value="Admin_Login">
+    <input type ="hidden" name ="action" value="get_admin">
     <label>Username:</label>
     <input type ="text" name="username"
-           value="<?php echo htmlspecialchars($username); ?>"><!-- comment -->
+           value="<?php echo htmlspecialchars($username); ?>">
     <br>
      <label>Password:</label>
      <input type ="text" name="password"
